@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.test.dao.BoardMapper">
+ 	<select id="selectAllBoard" resultType="Board">
+ 		select 
+ 			board_num as boardNum
+ 			,board_title as boardTitle
+ 			,member_id as memberId
+ 			,to_char(board_indate,'YYYY-MM-DD') as boardIndate
+ 			,board_count as "count"
+ 		from 
+ 			spring_board
+ 		order by
+ 			board_num desc
+ 	</select>
+ 	
+ 	<select id="readBoard" parameterType="int" resultType="Board">
+		 	select
+		 		board_num as boardNum
+		 		,board_title as boardTitle
+		 		,board_content as boardContent
+		 		,member_id as memberId
+		 		,to_char(board_indate,'YYYY-MM-DD') as boardIndate
+		 		,board_count as "count"
+		 	from
+		 		spring_board
+		 	where
+		 		board_num = #{boardNum }
+ 	</select>
+ 	
+ 	<select id="getFileInfo" parameterType="int" resultType="File">
+ 		select
+ 			board_num as boardNum
+ 			,saved_file_name as savedFileName
+ 			,original_file_name as originalFileName
+ 		from
+ 			spring_file
+ 		where
+ 			board_num = #{boardNum }
+ 	</select>
+ 	<select id="readAllReply" parameterType="int" resultType="Reply">
+ 		select
+ 			board_num as boardNum
+ 			,board_id	as memberId
+ 			,reply_content as replyContent
+ 			,to_char(reply_indate,'YYYY-MM-DD') as replyIndate
+ 			,reply_num as replyNum
+ 		from
+ 			spring_reply
+ 		where
+ 			board_num = #{boardNum }
+ 		order by
+ 			reply_indate asc
+ 	</select>
+ 		<update id="updateCount" parameterType="int">
+ 		update
+ 			spring_board
+ 		set
+ 			board_count = board_count + 1
+ 		where
+ 			board_num = #{boardNum }
+ 	</update>
+ 	<insert id="writeBoard" parameterType="Board">
+ 		insert into
+ 			spring_board(
+ 			board_num
+ 			,board_title
+ 			,board_content
+ 			,member_id
+ 			)
+ 		values(
+ 			board_seq.nextval
+ 			,#{boardTitle }
+ 			,#{boardContent }
+ 			,#{memberId }
+ 		)
+ 	</insert>
+ 	<insert id="uploadFile" parameterType="File">
+ 		insert into
+ 			spring_file
+ 		values(
+ 			#{boardNum }
+ 			,#{savedFileName }
+ 			,#{originalFileName }
+ 			)
+ 	</insert>
+ 	<update id="updateBoard" parameterType="Board">
+ 		update 
+ 			spring_board
+ 		set
+ 			board_title = #{boardTitle }
+ 			,board_content = #{boardContent }
+ 		where
+ 			board_num = #{boardNum }
+ 	</update>
+ 	<delete id="deleteBoard" parameterType="int">
+ 		delete from
+ 			spring_board
+ 		where
+ 			board_num = #{boardNum }
+ 	</delete> 
+ 	<delete id="deleteFileInfo" parameterType="int">
+ 		delete from
+ 			spring_file
+ 		where
+ 			board_num = #{boardNum }
+ 	</delete>
+ 	<insert id="writeReply" parameterType="Reply">
+ 		insert into
+ 			spring_reply
+ 		values(
+ 			#{boardNum }
+ 			,#{memberId }
+ 			,#{replyContent }
+ 			,sysdate
+ 			,reply_seq.nextval
+ 		) 			
+ 	</insert> 
+ 	<update id="updateReply" parameterType="Reply">
+ 	update
+ 		spring_reply
+ 	set
+ 		reply_content = #{replyContent }
+ 	where
+ 		reply_num = #{replyNum }
+ 	</update>
+ 	<delete id="deleteReply" parameterType="int">
+ 	delete from
+ 		spring_reply
+ 	where
+ 		reply_num = #{replyNum }
+ 	</delete>
+ 	<select id="selectBoardNum" resultType="int">
+ 		select
+ 			max(board_num) as boardNum
+ 		from
+ 			spring_board
+ 	</select>
+ 	<select id="searchBoard" parameterType="HashMap" resultType="Board">
+ 		select	
+ 			board_num as boardNum
+ 			,board_title as boardTitle
+ 			,member_id as memberId
+ 			,to_char(board_indate,'YYYY-MM-DD') as boardIndate
+ 			,board_count as "count"
+ 		from 
+ 			spring_board
+ 		<where>
+ 			<if test="condition == 'boardTitle'">
+ 				board_title like '%'||#{searchWord }||'%'
+ 			</if>
+ 			<if test="condition == 'boardContent'">
+ 				board_content like '%'||#{searchWord }||'%'
+ 			</if>
+ 			<if test="condition == 'memberId'">
+ 				member_id like '%'||#{searchWord }||'%'
+ 			</if> 
+ 			</where>			
+ 		order by
+ 			board_num desc
+ 	</select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.spring.test.vo.MemberVO" alias="Member"/>
+		<typeAlias type="com.spring.test.vo.BoardVO" alias="Board"/>
+		<typeAlias type="com.spring.test.vo.ReplyVO" alias="Reply"/>
+		<typeAlias type="com.spring.test.vo.FileVO" alias="File"/>
+	</typeAliases>
+	<mappers>
+		<mapper resource="memberMapper.xml"/>
+		<mapper resource="boardMapper.xml"/>
+	</mappers>
+</configuration>
